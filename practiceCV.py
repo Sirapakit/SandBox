@@ -4,6 +4,7 @@ import math
 from PIL import Image
 import matplotlib.pyplot as plt
 import glob
+import numpy as np
 
 """
 #Question 1
@@ -22,7 +23,8 @@ while vidcap.isOpened():
         break
     
     if (frame_num % math.floor(fps/2) == 0) :
-        cv2.imwrite(os.path.join("C:/Users/sirap/Desktop/dogCat/chicky", "frame_"+ str(int(count)) + ".png"), frame)
+        cv2.imwrite(os.path.join("C:/Users/sirap/Desktop/dogCat/chicky",
+        "frame_"+ str(int(count)) + ".png"), frame)
         count += 1   
    
 
@@ -35,20 +37,57 @@ vidcap.release()
 
 """
 #Question 2
-arr = os.listdir("C:/Users/sirap/Desktop/dogCat/chicky")
-print(len(arr))
-print(arr)
+path = "C:/Users/sirap/Desktop/dogCat/chicky"
+list_item = os.listdir(path)
+print("There are ",len(list_item)," items in folder")
+#print(list_item)
+png = []
+
+def classify():
+    for i in list_item:
+
+        #print(i)
+        
+        y = i.split(".png")
+        z = y[0] 
+        png.append(z)  
+     
+    print("PNG format of this folder is",png)
+
+classify()
 """
 
 #Question 3
 
 file_list = glob.glob("C:/Users/sirap/Desktop/dogCat/chicky/*.*")
 
-count = 0
-for picture in file_list:
-    gray = cv2.imread(picture,0)
-    cv2.imwrite(os.path.join("C:/Users/sirap/Desktop/dogCat/gray" , "gray_"+ str(int(count)) + ".png"), gray)
-    count += 1
+def createGray():
+    count = 0
+    for picture in file_list:
+        gray = cv2.imread(picture,0)
+        cv2.imwrite(os.path.join("C:/Users/sirap/Desktop/dogCat/gray" , "gray_"+ str(int(count)) + ".png"), gray)
+        count += 1
+
+gray_list = glob.glob("C:/Users/sirap/Desktop/dogCat/gray/*.*")
+array = []
+
+def countBrightness():
+    for gray in gray_list  : 
+        img = cv2.imread(gray)
+        #print(img)
+        #print("Sum  = ",cv2.sumElems(img))
+        Sum = cv2.sumElems(img)[0]
+        #print("Size = ",img.size)
+        bright = Sum/img.size
+        #print("Brightness = ",Sum/img.size)
+        array.append(bright)
+        
+countBrightness()
+
+plt.plot(array)
+plt.ylabel("Brightness Level")
+plt.xlabel("Frame Number")
+plt.show()
 
 
 
